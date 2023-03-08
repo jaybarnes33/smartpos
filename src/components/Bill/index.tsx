@@ -1,10 +1,14 @@
 import { items } from "@/data/items";
 import { useBill } from "@/hooks/useBill";
 import { useDash } from "@/hooks/useDash";
-import { Item } from "@/types/item";
+import { Item, Product } from "@/types/item";
+import makeSecuredRequest from "@/utils/makeSecuredRequest";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa";
+import { toast } from "react-toastify";
 import Input from "../core/Input";
+import Loader from "../core/Loader";
+import { search } from "../Products/controllers";
 import Listing from "../Search/Listing";
 const Bill = () => {
   const { newBill } = useDash();
@@ -17,21 +21,27 @@ const Bill = () => {
       }, 1000);
     }
   }, []);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<Product[]>();
+  useEffect(() => {
+    (async () => {
+      const { products: data } = await makeSecuredRequest("/api/products");
+      setProducts(data);
+    })();
+  }, []);
 
-  const [products, setProducts] = useState<Item[]>(items);
-
-  const handleSearch = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    setProducts(
-      value.length
-        ? items.filter((item) => {
-            if (item.name.toLowerCase().includes(value)) {
-              return item;
-            }
-          })
-        : items
-    );
+  const handleSearch = async (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    try {
+      setLoading(true);
+      const items = await search(e.target.value);
+      setProducts(items);
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const { add, items: bill } = useBill();
@@ -52,8 +62,9 @@ const Bill = () => {
             />
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-neutral-200 p-2 rounded-xl">
+                {loading && <Loader />}
                 <h1 className="font-extrabold">Products matching query</h1>
-                {products.map((item, index) => (
+                {products?.map((item, index) => (
                   <div key={index + 1} onClick={() => add(item)}>
                     <Listing item={item} />
                   </div>

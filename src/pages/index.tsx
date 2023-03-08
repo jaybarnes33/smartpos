@@ -6,8 +6,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useEffect } from "react";
-import useUser from "@/hooks/useUser";
-import { useRouter } from "next/router";
+
 import AuthContent from "@/components/Auth/AuthContent";
 export default function Home() {
   return (

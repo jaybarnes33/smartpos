@@ -15,7 +15,7 @@ const Item = ({ data }: { data: IOrder }) => {
     <div className="bg-white rounded p-4 shadow-md">
       <div className="flex justify-between pb-3 ">
         <div className="flex-1 flex gap-4">
-          <span className="text-red-600 font-bold text-xl">
+          <span className="text-blue-600 font-bold text-xl">
             {" "}
             Order #{data.id}
           </span>{" "}

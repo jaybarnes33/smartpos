@@ -13,7 +13,9 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const { push } = useRouter();
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     setFormData((prevState) => ({

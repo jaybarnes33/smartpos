@@ -5,13 +5,16 @@ import BillProvider from "@/hooks/useBill";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import ModalProvider from "@/hooks/useModal";
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <BillProvider>
-      <ToastContainer />
-      <DashProvider>
-        <Component {...pageProps} />
-      </DashProvider>
-    </BillProvider>
+    <ModalProvider>
+      <BillProvider>
+        <ToastContainer />
+        <DashProvider>
+          <Component {...pageProps} />
+        </DashProvider>
+      </BillProvider>
+    </ModalProvider>
   );
 }

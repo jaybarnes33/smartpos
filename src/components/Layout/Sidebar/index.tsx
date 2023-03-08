@@ -28,7 +28,7 @@ const SideBar = () => {
     <div className="w-[250px] fixed left-0 px-5 h-screen border-r border-gray-200">
       <div className="my-[3rem]">
         <h1 className="text-2xl absolute top-5 font-bold">
-          <span className="text-red-600">Smart</span>POS
+          <span className="text-blue-600">Sales</span>plug
         </h1>
 
         <div className="flex flex-col gap-4 pt-5">
@@ -38,7 +38,7 @@ const SideBar = () => {
         </div>
       </div>
       <footer className="absolute bottom-5 text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} Dishplug POS</p>
+        <p>&copy; {new Date().getFullYear()} Salesplug</p>
       </footer>
     </div>
   );
