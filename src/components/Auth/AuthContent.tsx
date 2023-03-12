@@ -2,7 +2,6 @@
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";
 
-import axios from "axios";
 import useUser from "@/hooks/useUser";
 import Loader from "../core/Loader";
 
@@ -17,5 +16,15 @@ export default function AuthContent({ children }: { children: ReactNode }) {
       router.replace("/login");
     }
   }, [isAuthenticated, authenticating]);
-  return <div>{isAuthenticated && <div>{children}</div>}</div>;
+  return (
+    <>
+      {isAuthenticated ? (
+        <div>{children}</div>
+      ) : (
+        <div className="loader-wrapper  bg-transparent fixed w-screen h-screen grid place-items-center">
+          <Loader />
+        </div>
+      )}
+    </>
+  );
 }
