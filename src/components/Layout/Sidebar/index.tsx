@@ -20,6 +20,7 @@ const links = [
   { href: "/", text: "dashboard" },
   { href: "/products", text: "products" },
   { href: "/users", text: "users" },
+  { href: "/orders", text: "orders" },
   { href: "/stats", text: "statistics" },
   { href: "/settings", text: "settings" },
 ];
@@ -27,11 +28,11 @@ const SideBar = () => {
   return (
     <div className="w-[250px] fixed left-0 px-5 h-screen border-r border-gray-200">
       <div className="my-[3rem]">
-        <h1 className="text-2xl absolute top-5 font-bold">
-          <span className="text-blue-600">Sales</span>plug
+        <h1 className="text-2xl absolute top-5 font-bold dark:text-neutral-100">
+          <span className="text-primary">Sales</span>plug
         </h1>
 
-        <div className="flex flex-col gap-4 pt-5">
+        <div className="flex flex-col gap-4 pt-5 dark:text-neutral-100">
           {links.map((link) => (
             <Item href={link.href} text={link.text} key={link.href} />
           ))}

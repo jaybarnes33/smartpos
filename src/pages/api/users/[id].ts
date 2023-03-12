@@ -2,6 +2,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import Product from "@/models/User";
 import { User as IUser } from "@/types/user";
+import getUserID from "@/utils/getUserId";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -16,6 +17,9 @@ export default async function handler(
 ) {
   if (req.method === "PUT") {
     try {
+      const token = req.headers.authorization?.split(" ")[1] as string;
+      const userID = getUserID(token);
+      if (!userID) return res.status(401).end("Unauthorized!");
       await dbConnect();
 
       const updated = await User.findByIdAndUpdate(
@@ -33,6 +37,11 @@ export default async function handler(
     }
   } else if (req.method === "DELETE") {
     try {
+      const token = req.headers.authorization?.split(" ")[1] as string;
+
+      const userID = getUserID(token);
+
+      if (!userID) return res.status(401).end("Unauthorized!");
       await dbConnect();
       await User.findByIdAndDelete(req.query.id);
       return res.status(200).json({ message: "User deleted" });

@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/db";
 import Product from "@/models/Product";
 import { Product as IProduct } from "@/types/item";
+import getUserID from "@/utils/getUserId";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -16,7 +17,11 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       await dbConnect();
+      const token = req.headers.authorization?.split(" ")[1] as string;
 
+      const userID = getUserID(token);
+
+      if (!userID) return res.status(401).end("Unauthorized!");
       const { name, ...rest } = req.body;
 
       const exists = await Product.findOne({ name: name.toLowerCase() });

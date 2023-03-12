@@ -28,7 +28,7 @@ const Delete = ({ data }: { data: Product }) => {
             Cancel
           </button>
           <button
-            className="bg-primary hover:bg-yellow-600 items-center justify-center gap-2 flex mx-auto text-center transition-colors ease-in py-1 px-2 min-w-[100px] rounded"
+            className="bg-primary hover:bg-primary items-center justify-center gap-2 flex mx-auto text-center transition-colors ease-in py-1 px-2 min-w-[100px] rounded"
             type="submit"
           >
             Delete

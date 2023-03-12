@@ -8,6 +8,7 @@ const Input = ({
   textarea,
   label,
   value,
+  required,
 }: {
   placeholder?: string;
   type?: string;
@@ -15,6 +16,7 @@ const Input = ({
   label?: string;
   value?: string | number;
   textarea?: boolean;
+  required?: boolean;
   onChange?: (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
   ) => void;
@@ -31,6 +33,7 @@ const Input = ({
           placeholder={placeholder}
           name={name}
           value={value}
+          required={required}
           type={type ? type : "text"}
           onChange={onChange}
         />

@@ -14,4 +14,5 @@ export interface Product extends Document {
   quantity: number;
   cost_price: number;
   description: string;
+  number?: number;
 }

@@ -9,7 +9,7 @@ const IconButton = ({
 }) => {
   return (
     <button
-      className="rounded-xl flex items-center justify-center text-2xl h-9 w-9 bg-slate-200"
+      className="rounded-xl flex items-center justify-center text-2xl h-9 w-9 bg-slate-200 dark:bg-yellow-900"
       onClick={action}
     >
       {icon}

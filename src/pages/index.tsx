@@ -18,7 +18,7 @@ export default function Home() {
       </Head>
       <LayoutWithSide>
         <div className="grid grid-cols-12 ">
-          <div className="col-span-4">
+          <div className="col-span-3">
             <Orders />
           </div>
           <Bill />

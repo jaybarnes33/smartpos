@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     username: "",
     password: "",
   });
@@ -50,6 +51,12 @@ const Register = () => {
         placeholder="Enter your phone number"
         type="tel"
         name="phone"
+        onChange={handleChange}
+      />
+      <Input
+        placeholder="Enter your email"
+        type="email"
+        name="email"
         onChange={handleChange}
       />
       <Input

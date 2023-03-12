@@ -25,7 +25,7 @@ const Products = () => {
   return (
     <LayoutWithSide>
       <div className="mt-5">
-        <h1 className="text-2xl font-bold">Products</h1>
+        <h1 className="text-2xl font-bold text-yellow-600">Products</h1>
 
         <div className="relative px-4">
           <button
@@ -33,7 +33,7 @@ const Products = () => {
               setSelected(<Add />);
               toggle();
             }}
-            className="flex items-center gap-2 bg-blue-500 text-white px-2 rounded-full absolute right-3 -top-[3rem] py-2"
+            className="flex items-center gap-2 bg-primary text-white px-2 rounded-full absolute right-3 -top-[3rem] py-2"
           >
             Add <FaPlusCircle />
           </button>

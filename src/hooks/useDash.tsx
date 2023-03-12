@@ -1,8 +1,16 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 interface AppContextInterface {
   toggle: () => void;
   newBill: boolean;
+  setTheme: Dispatch<SetStateAction<string>>;
+  theme: string;
 }
 
 const AppCtx = createContext<AppContextInterface | null>(null);
@@ -15,7 +23,7 @@ interface IProps {
 
 export const DashProvider = ({ children }: IProps) => {
   const [newBill, setNewBill] = useState(false);
-
+  const [theme, setTheme] = useState("");
   const toggle = () => {
     setNewBill(!newBill);
   };
@@ -25,9 +33,11 @@ export const DashProvider = ({ children }: IProps) => {
       value={{
         toggle,
         newBill,
+        setTheme,
+        theme,
       }}
     >
-      {children}
+      <div className={theme}>{children}</div>
     </AppCtx.Provider>
   );
 };

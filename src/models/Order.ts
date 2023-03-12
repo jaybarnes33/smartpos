@@ -1,15 +1,23 @@
 import { Order, OrderItem } from "@/types/order";
 import mongoose, { SchemaTypes } from "mongoose";
 
-const orderItem = new mongoose.Schema<OrderItem>({
-  item: {
-    type: SchemaTypes.ObjectId,
-    ref: "Product",
+const orderItem = new mongoose.Schema<OrderItem>(
+  {
+    item: {
+      type: SchemaTypes.ObjectId,
+      ref: "Product",
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
   },
-  quantity: {
-    type: Number,
-  },
-});
+  { _id: false }
+);
 const orderSchema = new mongoose.Schema<Order>(
   {
     teller: {
@@ -17,13 +25,32 @@ const orderSchema = new mongoose.Schema<Order>(
       ref: "User",
       required: true,
     },
+    amt_paid: {
+      type: Number,
+    },
+    payment_method: {
+      type: String,
+      enum: ["momo", "cash", "bank"],
+    },
     items: {
       type: [orderItem],
+      _id: false,
     },
     customer: {
       name: String,
       phone: String,
       location: String,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "processed"],
+      default: "processed",
+    },
+    total: {
+      type: Number,
+      default: 0,
+      required: true,
     },
   },
   {
