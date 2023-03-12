@@ -3,6 +3,7 @@ import FormWrapper from "@/components/Layout/FormWrapper";
 import useUser from "@/hooks/useUser";
 import { setAccessToken } from "@/misc/token";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
@@ -95,6 +96,9 @@ const Login = () => {
           </span>
         )}
       </button>
+      <small>
+        Don&apos;t have an account? <Link href={"/register"}>Register</Link>
+      </small>
     </FormWrapper>
   );
 };
