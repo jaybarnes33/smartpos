@@ -20,6 +20,9 @@ const productSchema = new mongoose.Schema<Product>(
     description: {
       type: String,
     },
+    location: {
+      type: String,
+    },
     cost_price: {
       type: Number,
       default: 0,

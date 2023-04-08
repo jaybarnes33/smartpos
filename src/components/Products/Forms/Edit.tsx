@@ -12,6 +12,7 @@ const Edit = ({ data }: { data: Product }) => {
     selling_price: 0,
     cost_price: 0,
     description: "",
+    location: "",
   });
 
   useEffect(() => {
@@ -79,7 +80,13 @@ const Edit = ({ data }: { data: Product }) => {
           placeholder="Enter Product description"
           textarea
         />
-
+        <Input
+          onChange={handleChange}
+          label="location"
+          name="location"
+          placeholder="Enter Product location"
+          textarea
+        />
         <button
           type="submit"
           className="bg-primary hover:bg-primary items-center justify-center gap-2 flex mx-auto text-center transition-colors ease-in py-1 px-2 min-w-[100px] rounded"
