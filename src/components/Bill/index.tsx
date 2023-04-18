@@ -1,15 +1,5 @@
 import { useBill } from "@/hooks/useBill";
 import { useDash } from "@/hooks/useDash";
-import { printer, PrinterTypes } from "node-thermal-printer";
-
-const Printer = new printer({
-  type: PrinterTypes.EPSON,
-  interface: "usb",
-  options: {
-    timeout: 5000,
-  },
-  removeSpecialCharacters: false,
-});
 
 import useUser from "@/hooks/useUser";
 import { Product } from "@/types/item";
@@ -47,6 +37,7 @@ const Bill = () => {
   });
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>();
+
   useEffect(() => {
     {
       setInterval(() => {
@@ -54,16 +45,6 @@ const Bill = () => {
       }, 1000);
     }
   }, []);
-
-  const printer = new Printer({
-    type: "epson",
-    interface: "usb",
-    options: {
-      timeout: 5000,
-    },
-    characterSet: "SLOVENIA",
-    removeSpecialCharacters: false,
-  });
 
   useEffect(() => {
     (async () => {
