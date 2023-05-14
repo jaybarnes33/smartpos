@@ -23,6 +23,8 @@
     "bcrypt": "^5.1.0",
     "chart.js": "^4.0.1",
     "cookie": "^0.5.0",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-usb": "^3.0.0-alpha.4",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
     "formik": "^2.2.9",
@@ -47,6 +49,7 @@
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
+    "@types/escpos": "^2.5.2",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4"

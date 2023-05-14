@@ -1,15 +1,5 @@
 import { useBill } from "@/hooks/useBill";
 import { useDash } from "@/hooks/useDash";
-import { printer, PrinterTypes } from "node-thermal-printer";
-
-const Printer = new printer({
-  type: PrinterTypes.EPSON,
-  interface: "usb",
-  options: {
-    timeout: 5000,
-  },
-  removeSpecialCharacters: false,
-});
 
 import useUser from "@/hooks/useUser";
 import { Product } from "@/types/item";
@@ -24,6 +14,8 @@ import { search } from "../Products/controllers";
 import Listing from "../Search/Listing";
 import { handleAdd } from "./controllers";
 import OrderItem from "./Item";
+import Script from "next/script";
+import escpos from "escpos";
 
 const Bill = () => {
   const { newBill, toggle } = useDash();
@@ -34,7 +26,7 @@ const Bill = () => {
   const [customer, setCustomer] = useState<Customer>({
     name: "",
     phone: "",
-    location: "",
+    location: ""
   });
   const [orderDetails, setOrderDetails] = useState<{
     status: string;
@@ -43,7 +35,7 @@ const Bill = () => {
   }>({
     status: "",
     payment_method: "",
-    amt_paid: 0,
+    amt_paid: 0
   });
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>();
@@ -54,16 +46,6 @@ const Bill = () => {
       }, 1000);
     }
   }, []);
-
-  const printer = new Printer({
-    type: "epson",
-    interface: "usb",
-    options: {
-      timeout: 5000,
-    },
-    characterSet: "SLOVENIA",
-    removeSpecialCharacters: false,
-  });
 
   useEffect(() => {
     (async () => {
@@ -82,7 +64,7 @@ const Bill = () => {
     const order = {
       customer,
       items,
-      status,
+      status
     };
     itemsFromStorage.push(order);
     localStorage.setItem("queue", JSON.stringify(itemsFromStorage));
@@ -107,17 +89,53 @@ const Bill = () => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setOrderDetails((prev) => ({ ...prev, [name]: value }));
+    setOrderDetails(prev => ({ ...prev, [name]: value }));
   };
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setCustomer((prev) => ({ ...prev, [name]: value }));
+    setCustomer(prev => ({ ...prev, [name]: value }));
+  };
+
+  const connectPrinter = () => {
+    // let device: USBDevice;
+    // // Request permission to access the printer
+    // navigator.usb
+    //   .requestDevice({
+    //     filters: [{ vendorId: 0x04b8, productId: 0x0e28 }]
+    //   })
+    //   .then(device => {
+    //     device.open();
+    //     return device;
+    //   })
+    //   .then(device => {
+    //     console.log(device);
+    //   })
+    //   .catch(err => {
+    //     console.log("Permission failure", err);
+    //     // Error requesting permission to access the printer
+    //   });
   };
 
   return (
     <>
+      <Script
+        src="/epos.js"
+        onLoad={() => {
+          // Connect to the printer
+          const eposDevice = new epson.ePOSDevice();
+
+          // Get the IP address and port number of the printer
+          const ipAddress = "192.168.192.168"; // Replace with actual IP address of the printer
+          const portNumber = 17458; // Replace with actual port number of the printer
+
+          // Create a WebSocket URL for the printer
+          // const wsUrl = eposDevice.createWebSocketURI(ipAddress, portNumber);
+
+          eposDevice.connect("192.168.192.168:17458");
+        }}
+      />
       {newBill && (
         <div className="shadow col-span-9 p-5 bg-neutral-200 dark:bg-neutral-800 rounded-l-3xl h-screen w-full">
           <div className="text-neutral-500 flex items-center gap-1">
@@ -148,24 +166,25 @@ const Bill = () => {
               </div>
               <form
                 className="bg-white dark:bg-neutral-700 relative col-span-7 p-4 rounded-2xl "
-                onSubmit={async (e) => {
+                onSubmit={async e => {
                   e.preventDefault();
+                  connectPrinter();
                   await handleAdd({
                     customer,
-                    items: bill.map((item) => {
+                    items: bill.map(item => {
                       return {
                         item: item._id,
                         price: item.selling_price,
-                        quantity: item.number as number,
+                        quantity: item.number as number
                       };
                     }),
-                    teller: user._id,
+                    teller: user?._id,
                     status: orderDetails.status,
                     payment_method: orderDetails.payment_method,
-                    amt_paid: orderDetails.amt_paid,
+                    amt_paid: orderDetails.amt_paid
                   });
                   setCustomer({ name: "", location: "", phone: "" });
-                  setOrderDetails((prev) => ({ ...prev, status: "" }));
+                  setOrderDetails(prev => ({ ...prev, status: "" }));
                   clear();
                   toggle();
                 }}
@@ -207,9 +226,9 @@ const Bill = () => {
                         id="status"
                         required
                         onChange={({ target: { value } }) =>
-                          setOrderDetails((prev) => ({
+                          setOrderDetails(prev => ({
                             ...prev,
-                            status: value,
+                            status: value
                           }))
                         }
                         name="status"
@@ -225,7 +244,7 @@ const Bill = () => {
                 <h1 className="text-center text-2xl">Items in Order</h1>
 
                 <div className="h-[34vh] py-2 overflow-scroll">
-                  {bill?.map((item) => (
+                  {bill?.map(item => (
                     <OrderItem item={item} key={item._id} />
                   ))}
                 </div>
@@ -264,7 +283,10 @@ const Bill = () => {
                 </div>
 
                 {bill.length && (
-                  <button className="px-3 py-2 flex mx-auto bg-primary rounded-xl hover:bg-primary">
+                  <button
+                    type="submit"
+                    className="px-3 py-2 flex mx-auto bg-primary rounded-xl hover:bg-primary"
+                  >
                     Print
                   </button>
                 )}
