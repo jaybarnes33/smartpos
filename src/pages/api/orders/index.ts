@@ -47,7 +47,13 @@ export default async function handler(
         await product.save();
       });
 
-      return res.status(201).json({ message: "Order created", order });
+      return res.status(201).json({
+        message: "Order created",
+        order: await order.populate([
+          { path: "items.item" },
+          { path: "teller", select: "name" },
+        ]),
+      });
     } catch (error) {
       res.status(500).json({ message: "Something went wrong" });
       console.log(error);

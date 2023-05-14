@@ -4,8 +4,13 @@ import { toast } from "react-toastify";
 
 export const handleAdd = async (order: IOrder) => {
   try {
-    const { message } = await makeSecuredRequest("/api/orders", "POST", order);
+    const { message, order: data } = await makeSecuredRequest(
+      "/api/orders",
+      "POST",
+      order
+    );
     toast.success(message);
+    return data;
   } catch (error) {
     toast.error("Something went wrong, please try again");
   }
