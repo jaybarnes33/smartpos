@@ -1,6 +1,7 @@
 //@ts-nocheck
 import { useBill } from "@/hooks/useBill";
 import { useDash } from "@/hooks/useDash";
+
 import useUser from "@/hooks/useUser";
 
 import {
@@ -48,6 +49,7 @@ const Bill = () => {
   });
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>();
+
   useEffect(() => {
     {
       setInterval(() => {
