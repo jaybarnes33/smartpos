@@ -7,6 +7,7 @@ import Head from "next/head";
 import "react-toastify/dist/ReactToastify.css";
 import ModalProvider from "@/hooks/useModal";
 import Script from "next/script";
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <BillProvider>
@@ -19,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </DashProvider>
       </ModalProvider>
-      <Script src="/epos.js" />
+      {/* <Script src="/epos.js" /> */}
     </BillProvider>
   );
 }

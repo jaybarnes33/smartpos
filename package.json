@@ -23,7 +23,6 @@
     "bcrypt": "^5.1.0",
     "chart.js": "^4.0.1",
     "cookie": "^0.5.0",
-    "electron-printer": "^0.0.5",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
     "formik": "^2.2.9",
@@ -34,7 +33,6 @@
     "next": "13.0.6",
     "next-pwa": "^5.6.0",
     "node-thermal-printer": "^4.2.0",
-    "printer": "^0.4.0",
     "react": "18.2.0",
     "react-chartjs-2": "^5.0.1",
     "react-dom": "18.2.0",
@@ -49,6 +47,7 @@
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
+    "@types/escpos": "^2.5.2",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4"

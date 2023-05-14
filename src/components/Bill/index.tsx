@@ -1,12 +1,23 @@
+//@ts-nocheck
 import { useBill } from "@/hooks/useBill";
 import { useDash } from "@/hooks/useDash";
 
 import useUser from "@/hooks/useUser";
+
+import {
+  Br,
+  Cut,
+  Line,
+  Printer,
+  Text,
+  Row,
+  render,
+} from "react-thermal-printer";
 import { Product } from "@/types/item";
-import { Customer } from "@/types/order";
+import { Customer, Order } from "@/types/order";
 import makeSecuredRequest from "@/utils/makeSecuredRequest";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { FaMinus, FaPlus, FaRegClock, FaSave } from "react-icons/fa";
+import { FaRegClock, FaSave } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Input from "../core/Input";
 import Loader from "../core/Loader";
@@ -14,6 +25,7 @@ import { search } from "../Products/controllers";
 import Listing from "../Search/Listing";
 import { handleAdd } from "./controllers";
 import OrderItem from "./Item";
+import Script from "next/script";
 
 const Bill = () => {
   const { newBill, toggle } = useDash();
@@ -97,6 +109,115 @@ const Bill = () => {
     setCustomer((prev) => ({ ...prev, [name]: value }));
   };
 
+  const connectPrinter = async (order: Order) => {
+    console.log({ order });
+    const receipt = (
+      <Printer type="epson" width={42} characterSet="pc437_usa">
+        <Text size={{ width: 2, height: 2 }}></Text>
+        <Text bold={true}>Buildrite Hardware</Text>
+        {/*@ts-ignore*/}
+        <Row left="Teller" right={order.teller.name} />
+        <Row left="Customer Name" right={order.customer.name} />
+        <Row
+          left="Customer Location"
+          right={order.customer.location as string}
+        />
+        <Row left="Customer Address" right={order.customer.phone as string} />
+        <Br />
+        <Line />
+        <Text bold={true}>Order Summary</Text>
+        {order.items.map((item, id) => (
+          // eslint-disable-next-line react/jsx-key
+          <Row
+            //@ts-ignore
+            left={item.item.name + "   " + item.quantity + "   " + item.price}
+            right={
+              <Text>
+                GHS&nbsp;{(item.price * item.quantity).toFixed(2).toString()}
+              </Text>
+            }
+          />
+        ))}
+        <Line />
+        <Text bold>Order details</Text>
+        <Row
+          left={<Text bold>Payment Method:</Text>}
+          right={<Text>{order.payment_method}</Text>}
+        />
+        <Row
+          left={<Text bold>Order date:</Text>}
+          right={<Text>{new Date(order.createdAt).toDateString()}</Text>}
+        />
+        <Row
+          left={<Text bold>Time:</Text>}
+          right={
+            <Text>{new Date(order.createdAt).toTimeString().slice(0, 5)}</Text>
+          }
+        />
+        <Row
+          left={<Text bold>Status:</Text>}
+          right={<Text>{order.status}</Text>}
+        />
+
+        <Row
+          left={<Text bold>Paid:</Text>}
+          right={<Text> GHS&nbsp;{order.amt_paid}</Text>}
+        />
+        <Row
+          left={<Text bold>Total:</Text>}
+          right={<Text> GHS&nbsp;{total}</Text>}
+        />
+        <Row
+          left={<Text>Balance:</Text>}
+          right={
+            <Text>
+              GHS&nbsp;
+              {Math.abs(total - order.amt_paid)
+                .toFixed(2)
+                .toString()}
+            </Text>
+          }
+        />
+        <Text align="center" bold>
+          https://otwumasi.tech
+        </Text>
+        <Cut />
+      </Printer>
+    );
+    let device: USBDevice;
+    const devices = await navigator.usb.getDevices();
+    if (!devices.length) {
+      // Request permission to access the printer
+      navigator.usb
+        .requestDevice({
+          filters: [{ vendorId: 0x04b8, productId: 0x0e28 }],
+        })
+        .then(async (device) => {
+          device = device;
+        })
+        .catch((error) => console.error(error));
+    } else {
+      device = devices.find(
+        (d) => d.vendorId === 0x04b8 && d.productId === 0x0e28
+      )!;
+      if (!device) {
+        throw new Error("Printer not found.");
+      }
+    }
+
+    await device.open();
+    await device.selectConfiguration(1);
+
+    await device.claimInterface(0);
+    await device.selectConfiguration(1);
+    await device.claimInterface(0);
+    await device.selectAlternateInterface(0, 0); // Select alternate interface
+    await device.transferOut(1, await render(receipt));
+
+    await device.releaseInterface(0);
+    return await device.close();
+  };
+
   return (
     <>
       {newBill && (
@@ -131,7 +252,8 @@ const Bill = () => {
                 className="bg-white dark:bg-neutral-700 relative col-span-7 p-4 rounded-2xl "
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  await handleAdd({
+
+                  const order = await handleAdd({
                     customer,
                     items: bill.map((item) => {
                       return {
@@ -140,13 +262,18 @@ const Bill = () => {
                         quantity: item.number as number,
                       };
                     }),
-                    teller: user._id,
+                    teller: user?._id,
                     status: orderDetails.status,
                     payment_method: orderDetails.payment_method,
                     amt_paid: orderDetails.amt_paid,
                   });
+                  connectPrinter(order);
                   setCustomer({ name: "", location: "", phone: "" });
-                  setOrderDetails((prev) => ({ ...prev, status: "" }));
+                  setOrderDetails((prev) => ({
+                    status: "",
+                    amt_paid: 0,
+                    payment_method: "",
+                  }));
                   clear();
                   toggle();
                 }}
@@ -245,7 +372,10 @@ const Bill = () => {
                 </div>
 
                 {bill.length && (
-                  <button className="px-3 py-2 flex mx-auto bg-primary rounded-xl hover:bg-primary">
+                  <button
+                    type="submit"
+                    className="px-3 py-2 flex mx-auto bg-primary rounded-xl hover:bg-primary"
+                  >
                     Print
                   </button>
                 )}

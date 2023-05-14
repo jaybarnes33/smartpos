@@ -1,10 +1,3 @@
-import {
-  printer as ThermalPrinter,
-  PrinterTypes,
-  CharacterSet,
-  BreakLine,
-} from "node-thermal-printer";
-
 import dbConnect from "@/lib/db";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
@@ -26,27 +19,7 @@ export default async function handler(
   if (req.method === "POST") {
     try {
       await dbConnect();
-      const electron =
-        typeof process !== "undefined" &&
-        process.versions &&
-        !!process.versions.electron;
 
-      let printer = new ThermalPrinter({
-        type: PrinterTypes.EPSON, // Printer type: 'star' or 'epson'
-        interface: "printer:auto", // Printer interface
-        characterSet: CharacterSet.SLOVENIA, // Printer character set - default: SLOVENIA
-        removeSpecialCharacters: false, // Removes special characters - default: false
-        lineCharacter: "=", // Set character for lines - default: "-"
-        breakLine: BreakLine.WORD, // Break line after WORD or CHARACTERS. Disabled with NONE - default: WORD
-        options: {
-          // Additional options
-          timeout: 5000, // Connection timeout (ms) [applicable only for network printers] - default: 3000
-        },
-        driver: require(electron ? "electron-printer" : "printer"),
-      });
-
-      console.log(printer);
-      console.log(await printer.isPrinterConnected());
       const token = req.headers.authorization?.split(" ")[1] as string;
 
       const userID = getUserID(token);
@@ -74,7 +47,13 @@ export default async function handler(
         await product.save();
       });
 
-      return res.status(201).json({ message: "Order created", order });
+      return res.status(201).json({
+        message: "Order created",
+        order: await order.populate([
+          { path: "items.item" },
+          { path: "teller", select: "name" },
+        ]),
+      });
     } catch (error) {
       res.status(500).json({ message: "Something went wrong" });
       console.log(error);
