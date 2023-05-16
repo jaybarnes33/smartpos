@@ -4,6 +4,7 @@ import { handleEdit } from "@/components/Products/controllers";
 import { Item, Product } from "@/types/item";
 import { Dialog } from "@headlessui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSWRConfig } from "swr";
 
 const Edit = ({ data }: { data: Product }) => {
   const [product, setProduct] = useState<Item>({
@@ -14,6 +15,7 @@ const Edit = ({ data }: { data: Product }) => {
     description: "",
     location: "",
   });
+  const { mutate } = useSWRConfig();
 
   useEffect(() => {
     setProduct(data);
@@ -32,9 +34,10 @@ const Edit = ({ data }: { data: Product }) => {
       <Dialog.Title className="text-xl font-bold">Edit Product</Dialog.Title>
       <form
         className="px-2"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          handleEdit(product, data._id);
+          await handleEdit(product, data._id);
+          mutate("/api/products");
           toggle();
         }}
       >
@@ -84,6 +87,7 @@ const Edit = ({ data }: { data: Product }) => {
           onChange={handleChange}
           label="location"
           name="location"
+          value={product.location}
           placeholder="Enter Product location"
           textarea
         />

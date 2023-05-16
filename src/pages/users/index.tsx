@@ -10,7 +10,7 @@ import makeSecuredRequest from "@/utils/makeSecuredRequest";
 import { Dialog } from "@headlessui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
-
+import useSWR from "swr";
 const Users = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [user, setUser] = useState<{
@@ -33,16 +33,14 @@ const Users = () => {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
   const { toggle, setSelected } = useModalWithData();
-
+  const { data } = useSWR("/api/users", makeSecuredRequest);
   useEffect(() => {
-    (async () => {
-      const { users: data } = await makeSecuredRequest("/api/users");
-
-      setUsers(data);
-    })();
-  }, []);
+    if (data) {
+      setUsers(data.users);
+    }
+  }, [data]);
   return (
-    <LayoutWithSide>
+    <>
       <div className="mt-5">
         <h1 className="text-2xl font-bold text-yellow-600">Users</h1>
 
@@ -105,7 +103,7 @@ const Users = () => {
           </table>
         </div>
       </div>
-    </LayoutWithSide>
+    </>
   );
 };
 

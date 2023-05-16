@@ -7,7 +7,7 @@ import React, { ChangeEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { User } from "@/types/user";
 import { toast } from "react-toastify";
-
+import { useSWRConfig } from "swr";
 const Add = () => {
   const [user, setUser] = useState<User>({
     name: "",
@@ -18,6 +18,7 @@ const Add = () => {
     confirm_password: "",
   });
 
+  const { mutate } = useSWRConfig();
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -31,11 +32,12 @@ const Add = () => {
       <Dialog.Title className="text-xl font-bold">Edit User</Dialog.Title>
       <form
         className="px-2"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          user.confirm_password === user.password
-            ? handleAdd(user)
-            : toast.error("Passwords don't match");
+
+          await handleAdd(user);
+          mutate("/api/users");
+
           toggle();
         }}
       >

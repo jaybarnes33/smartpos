@@ -5,9 +5,10 @@ import { Item, Product } from "@/types/item";
 import { Dialog } from "@headlessui/react";
 import React, { useState } from "react";
 import { IUser } from "@/types/user";
-
+import { useSWRConfig } from "swr";
 const Delete = ({ data }: { data: IUser }) => {
   const { toggle } = useModalWithData();
+  const { mutate } = useSWRConfig();
   return (
     <>
       <Dialog.Title className="text-xl font-bold">Delete Product</Dialog.Title>
@@ -17,6 +18,7 @@ const Delete = ({ data }: { data: IUser }) => {
           e.preventDefault();
           toggle();
           await handleDelete(data._id);
+          mutate("/api/users");
         }}
       >
         <p className="py-2">

@@ -5,8 +5,9 @@ import { Item } from "@/types/item";
 import { Dialog } from "@headlessui/react";
 import React, { ChangeEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa";
-
+import { useSWRConfig } from "swr";
 const Add = () => {
+  const { mutate } = useSWRConfig();
   const [product, setProduct] = useState<Item>({
     name: "",
     quantity: 0,
@@ -32,6 +33,7 @@ const Add = () => {
         onSubmit={async (e) => {
           e.preventDefault();
           await handleAdd(product);
+          mutate("/api/products");
           toggle();
         }}
       >

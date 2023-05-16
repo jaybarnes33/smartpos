@@ -20,7 +20,7 @@ export default async function handler(
       const token = req.headers.authorization?.split(" ")[1] as string;
 
       const userID = getUserID(token);
-
+      console.log({ body: req.body });
       if (!userID) return res.status(401).end("Unauthorized!");
       const updated = await Product.findByIdAndUpdate(
         req.query.id,

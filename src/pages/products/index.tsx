@@ -11,19 +11,20 @@ import makeSecuredRequest from "@/utils/makeSecuredRequest";
 
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
-
+import useSWR from "swr";
 const Products = () => {
-  const [products, setProducts] = useState<Product[]>([]);
   const { toggle, setSelected } = useModalWithData();
-  useEffect(() => {
-    (async () => {
-      const { products: data } = await makeSecuredRequest("/api/products");
+  const [products, setProducts] = useState<Product[]>([]);
+  const { data } = useSWR("/api/products", makeSecuredRequest);
 
-      setProducts(data);
-    })();
-  }, []);
+  useEffect(() => {
+    if (data) {
+      setProducts(data.products);
+    }
+  }, [data]);
+  console.log(products);
   return (
-    <LayoutWithSide>
+    <>
       <div className="mt-5">
         <h1 className="text-2xl font-bold text-yellow-600">Products</h1>
 
@@ -53,7 +54,7 @@ const Products = () => {
               </tr>
             </thead>
             <tbody>
-              {products?.map((item) => (
+              {products?.map((item: Product) => (
                 <tr
                   key={item.id}
                   className={`bg-white  text-gray-900 border hover:bg-slate-200 `}
@@ -86,7 +87,7 @@ const Products = () => {
           </table>
         </div>
       </div>
-    </LayoutWithSide>
+    </>
   );
 };
 

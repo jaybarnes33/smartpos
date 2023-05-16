@@ -16,7 +16,7 @@ const Pending = () => {
   );
 
   return (
-    <LayoutWithSide>
+    <>
       <h1 className="font-bold text-2xl text-yellow-600">
         {query === "pending" ? "Pending Deliveries" : "Orders"}
       </h1>
@@ -58,7 +58,7 @@ const Pending = () => {
           ))}
         </tbody>
       </table>
-    </LayoutWithSide>
+    </>
   );
 };
 

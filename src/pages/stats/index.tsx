@@ -23,7 +23,7 @@ const Statistics = () => {
   }, [data]);
   const keys = Object.keys(statistics);
   return (
-    <LayoutWithSide>
+    <>
       <div className="mt-5">
         <h1 className="text-2xl font-bold text-yellow-600">Statistics</h1>
         <div className="flex flex-col gap-4">
@@ -44,7 +44,7 @@ const Statistics = () => {
           ))}
         </div>
       </div>
-    </LayoutWithSide>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { IUser, User } from "@/types/user";
 import { toast } from "react-toastify";
-
+import { useSWRConfig } from "swr";
 const Edit = ({ data }: { data: IUser }) => {
   const [user, setUser] = useState<User>({
     name: "",
@@ -28,16 +28,17 @@ const Edit = ({ data }: { data: IUser }) => {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
   const { toggle } = useModalWithData();
+  const { mutate } = useSWRConfig();
   return (
     <>
       <Dialog.Title className="text-xl font-bold">Edit User</Dialog.Title>
       <form
         className="px-2"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          user.confirm_password === user.password
-            ? handleEdit(user, data._id)
-            : toast.error("Passwords don't match");
+
+          await handleEdit(user, data._id);
+          mutate("/api/users");
           toggle();
         }}
       >
