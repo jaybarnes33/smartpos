@@ -9,7 +9,7 @@ const Settings = () => {
   };
   const { setTheme, theme } = useDash();
   return (
-    <LayoutWithSide>
+    <>
       <div className="mt-5">
         <h1 className="text-2xl font-bold text-neutral-800 dark:text-yellow-600">
           Settings
@@ -44,7 +44,7 @@ const Settings = () => {
           </ul>
         </div>
       </div>
-    </LayoutWithSide>
+    </>
   );
 };
 

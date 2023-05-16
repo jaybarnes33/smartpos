@@ -4,9 +4,10 @@ import { handleDelete, handleEdit } from "@/components/Products/controllers";
 import { Item, Product } from "@/types/item";
 import { Dialog } from "@headlessui/react";
 import React, { useState } from "react";
-
+import { useSWRConfig } from "swr";
 const Delete = ({ data }: { data: Product }) => {
   const { toggle } = useModalWithData();
+  const { mutate } = useSWRConfig();
   return (
     <>
       <Dialog.Title className="text-xl font-bold">Delete Product</Dialog.Title>
@@ -16,6 +17,7 @@ const Delete = ({ data }: { data: Product }) => {
           e.preventDefault();
           toggle();
           await handleDelete(data._id);
+          mutate("/api/products");
         }}
       >
         <p>Are you sure you want to delete {data.name}?</p>

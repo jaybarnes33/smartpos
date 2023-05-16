@@ -18,7 +18,7 @@ const Orders = () => {
   return (
     <div className="grid gap-4 px-4 pt-5">
       <div className="flex justify-between">
-        <h1 className="text-2xl  font-bold text-neutral-800 dark:text-yellow-600">
+        <h1 className="text-xl  font-bold text-neutral-800 dark:text-yellow-600">
           Recent Purchases
         </h1>
         <IconButton icon="+" action={toggle} />
